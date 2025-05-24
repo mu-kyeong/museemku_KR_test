@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>국어학 성향 테스트</title>
+  <link href="https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      font-family:  'Nanum Gothic', sans-serif;
+      background-color: #fef6e4;
+      color: #333;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    .container {
+      background-color: #fff7d6;
+      padding: 2rem;
+      border-radius: 2rem;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 90%;
+      max-width: 500px;
+      position: relative;
+    }
+    .title {
+      font-family: 'Fredoka', sans-serif;
+      font-size: 1.8rem;
+      color: #ff8c42;
+      margin-bottom: 1.5rem;
+    }
+    .question {
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+    }
+    button {
+      font-size: 1rem;
+      margin: 0.5rem;
+      padding: 0.6rem 1.2rem;
+      border-radius: 1rem;
+      border: none;
+      background-color: #ffd803;
+      color: #000;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #ffb703;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="title" id="pageTitle">나와 어울리는 국어학은?🔍</div>
+    <div class="question" id="question"></div>
+    <div id="buttons">
+      <button onclick="answer(true)">예</button>
+      <button onclick="answer(false)">아니오</button>
+    </div>
+  </div>
+  <script>
+function showQuestion() {
+  document.getElementById('question').innerText = questions[index].q;
+}
+
+    const questions = [
+      { q: '나는 눈치가 빠른 편이다👀', scores: { 화용론: 5 } },
+      { q: '다른 사람 말 속의 미묘한 의미를 잘 찾아낸다🧐', scores: { 화용론: 5 } },
+      { q: '연애 프로그램이 재미있다💕', scores: { 화용론: 5 } },
+      { q: '줄임말이나 신조어에 빠삭하다📝', scores: { 형태론: 5, 의미론: 3 } },
+      { q: '매번 되도 않는 줄임말을 쓰다가 친구들에게 혼난다😂', scores: { 형태론: 5 } },
+      { q: '커피 나오셨다는 말이 불편해서 견딜 수가 없다☕️', scores: { 형태론: 5 } },
+      { q: '속담이나 격언을 잘 활용한다📜', scores: { 의미론: 5 } },
+      { q: '논리학을 좋아한다🤓', scores: { 의미론: 5, 형태론: 3 } },
+      { q: '시를 읽는 것이 즐겁다📖', scores: { 의미론: 5 } },
+      { q: '한국말은 정말 아 다르고 어 다르다🇰🇷', scores: { 화용론: 5 } },
+      { q: '사투리나 다른 사람의 말투를 잘 따라한다🗣️', scores: { 음운론: 5 } },
+      { q: '그게 무슨 말인데! 중언부언하는 친구의 말을 잘 해석한다🤨', scores: { 형태론: 5 } },
+      { q: '나누고, 짝지어주고… 구조적으로 정리되지 않은 것을 보면 불편하다🧩', scores: { 형태론: 5 } },
+      { q: '팀플, 자료조사나 피피티보다 발표가 자신있다🎤', scores: { 화용론: 5 } },
+      { q: '왜 한국어는 철자와 발음이 다를까 고민해 본 적 있다🤔', scores: { 음운론: 5 } },
+      { q: '맞춤법을 틀리는 사람을 보면 도저히 참을 수가 없다😤', scores: { 음운론: 5 } },
+      { q: '철수책상철책상내가그린기린그림간장공장강공장장을 훌륭하게 발음할 수 있다👅', scores: { 음운론: 5 } },
+    ];
+
+    let index = 0;
+    const result = { 형태론: 0, 의미론: 0, 화용론: 0, 음운론: 0 };
+
+    function answer(isYes) {
+      if (isYes) {
+        const current = questions[index];
+        for (const key in current.scores) {
+          result[key] += current.scores[key];
+        }
+      }
+      index++;
+      if (index < questions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+function showResult() {
+  document.getElementById('pageTitle').innerText = '나와 어울리는 국어학은...';
+  document.getElementById('buttons').style.display = 'none';
+  const scores = Object.entries(result);
+  const maxScore = Math.max(...scores.map(([_, v]) => v));
+  const topFields = scores.filter(([_, v]) => v === maxScore).map(([k]) => k);
+
+  let message = '';
+  if (scores.every(([_, v]) => v >= 15)) {
+    message = '분야를 가리지 않는 인재, 당신은 국립국어원! 📖';
+  } else if (scores.every(([_, v]) => v <= 8)) {
+    message = '당신... 국어학과는 운명이 아닌가봐요😵';
+  } else {
+    const prefix = maxScore <= 10 ? '그나마…' : '';
+    message = `${prefix}${topFields.join(', ')}이 어울려요! ✨`;
+  }
+
+  document.getElementById('question').innerText = message;
+}
+
+
+    showQuestion();
+  </script>
+</body>
+</html>
